@@ -125,18 +125,18 @@ compile_kernel() {
     echo "Starting kernel compilation..."
     if [[ "$COMPILE_MAIN_DEFCONFIG" == *"msm8937"* ]]; then
         # Core configs
-        make -s O=out ARCH=arm64 $COMPILE_MAIN_DEFCONFIG vendor/msm8937-legacy.config vendor/common.config &> /dev/null
+        make -s O=out ARCH=arm64 vendor/common.config $COMPILE_MAIN_DEFCONFIG vendor/msm8937-legacy.config &> /dev/null
         # Device configs
-        make -s O=out ARCH=arm64 $COMPILE_DEVICE_DEFCONFIG vendor/xiaomi/msm8937/common.config &> /dev/null
+        make -s O=out ARCH=arm64 vendor/xiaomi/msm8937/common.config $COMPILE_DEVICE_DEFCONFIG &> /dev/null
         # Feature configs
-        make -s O=out ARCH=arm64 vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/lto.config vendor/feature/wireguard.config &> /dev/null
+        make -s O=out ARCH=arm64 vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config &> /dev/null
     elif [[ "$COMPILE_MAIN_DEFCONFIG" == *"bengal"* ]]; then
         # Core configs
-        make -s O=out ARCH=arm64 $COMPILE_MAIN_DEFCONFIG vendor/common.config &> /dev/null
+        make -s O=out ARCH=arm64 vendor/common.config $COMPILE_MAIN_DEFCONFIG &> /dev/null
         # Device configs
         make -s O=out ARCH=arm64 $COMPILE_DEVICE_DEFCONFIG &> /dev/null
         # Feature configs
-        make -s O=out ARCH=arm64 vendor/feature/android-13.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/lto.config vendor/feature/wireguard.config &> /dev/null
+        make -s O=out ARCH=arm64 vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config &> /dev/null
     else
         echo "Unknown main defconfig, cannot determine which config set to use."
         exit 1
