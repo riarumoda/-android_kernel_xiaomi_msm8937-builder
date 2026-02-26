@@ -29,6 +29,7 @@ setup_environment() {
     export DEVICE_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
     export COMPILE_MAIN_DEFCONFIG="vendor/$MAIN_DEFCONFIG_IMPORT"
     export COMPILE_DEVICE_DEFCONFIG="vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
+    export COMPILE_FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config"
     # KernelSU Settings
     if [[ "$KERNELSU_SELECTOR" == "--ksu=KSU_BLXX" ]]; then
         export KSU_SETUP_URI="https://github.com/backslashxx/KernelSU/raw/refs/heads/master/kernel/setup.sh"
@@ -70,19 +71,8 @@ setup_toolchain() {
 add_patches() {
     # Apply general config patches
     echo "Tuning the rest of default configs..."
-    sed -i 's/# CONFIG_PID_NS is not set/CONFIG_PID_NS=y/' $MAIN_DEFCONFIG
     sed -i 's/CONFIG_HZ_100=y/CONFIG_HZ_250=y/' $MAIN_DEFCONFIG
-    echo "CONFIG_POSIX_MQUEUE=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_SYSVIPC=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_CGROUP_DEVICE=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_DEVTMPFS=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_IPC_NS=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_DEVTMPFS_MOUNT=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_FSCACHE=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_FSCACHE_STATS=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_FSCACHE_HISTOGRAM=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_IOSCHED_BFQ=y" >> $MAIN_DEFCONFIG
     # Apply kernel rename to defconfig
     sed -i 's/CONFIG_LOCALVERSION="-perf"/CONFIG_LOCALVERSION="-perf-neon"/' arch/arm64/configs/vendor/feature/lineageos.config
     # Apply O3 flags into Kernel Makefile
@@ -129,14 +119,14 @@ compile_kernel() {
         # Device configs
         make -s O=out ARCH=arm64 vendor/xiaomi/msm8937/common.config $COMPILE_DEVICE_DEFCONFIG &> /dev/null
         # Feature configs
-        make -s O=out ARCH=arm64 vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config &> /dev/null
+        make -s O=out ARCH=arm64 $COMPILE_FEATURE_DEFCONFIG &> /dev/null
     elif [[ "$COMPILE_MAIN_DEFCONFIG" == *"bengal"* ]]; then
         # Core configs
         make -s O=out ARCH=arm64 vendor/common.config $COMPILE_MAIN_DEFCONFIG &> /dev/null
         # Device configs
         make -s O=out ARCH=arm64 $COMPILE_DEVICE_DEFCONFIG &> /dev/null
         # Feature configs
-        make -s O=out ARCH=arm64 vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config &> /dev/null
+        make -s O=out ARCH=arm64 $COMPILE_FEATURE_DEFCONFIG &> /dev/null
     else
         echo "Unknown main defconfig, cannot determine which config set to use."
         exit 1
