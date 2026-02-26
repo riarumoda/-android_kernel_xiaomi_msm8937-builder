@@ -29,7 +29,7 @@ setup_environment() {
     export DEVICE_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
     export COMPILE_MAIN_DEFCONFIG="vendor/$MAIN_DEFCONFIG_IMPORT"
     export COMPILE_DEVICE_DEFCONFIG="vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
-    export COMPILE_FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config vendor/qualcomm/msm8937/qrd.config"
+    export COMPILE_FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config"
     # KernelSU Settings
     if [[ "$KERNELSU_SELECTOR" == "--ksu=KSU_BLXX" ]]; then
         export KSU_SETUP_URI="https://github.com/backslashxx/KernelSU/raw/refs/heads/master/kernel/setup.sh"
@@ -84,7 +84,7 @@ add_patches() {
     echo "CONFIG_FSCACHE_HISTOGRAM=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
     # Apply kernel rename to defconfig
-    # sed -i 's/CONFIG_LOCALVERSION="-perf"/CONFIG_LOCALVERSION="-perf-neon"/' arch/arm64/configs/vendor/feature/lineageos.config
+    sed -i 's/CONFIG_LOCALVERSION="-perf"/CONFIG_LOCALVERSION="-perf-neon"/' arch/arm64/configs/vendor/feature/lineageos.config
     # Apply O3 flags into Kernel Makefile
     sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
     sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
@@ -124,22 +124,11 @@ compile_kernel() {
     # Start compilation
     echo "Starting kernel compilation..."
     if [[ "$COMPILE_MAIN_DEFCONFIG" == *"msm8937"* ]]; then
-        # Core configs
-        make -s O=out ARCH=arm64 vendor/common.config $COMPILE_MAIN_DEFCONFIG vendor/msm8937-legacy.config &> /dev/null
-        # Device configs
-        make -s O=out ARCH=arm64 vendor/xiaomi/msm8937/common.config $COMPILE_DEVICE_DEFCONFIG &> /dev/null
-        # Feature configs
-        make -s O=out ARCH=arm64 $COMPILE_FEATURE_DEFCONFIG &> /dev/null
-    elif [[ "$COMPILE_MAIN_DEFCONFIG" == *"bengal"* ]]; then
-        # Core configs
-        make -s O=out ARCH=arm64 vendor/common.config $COMPILE_MAIN_DEFCONFIG &> /dev/null
-        # Device configs
-        make -s O=out ARCH=arm64 $COMPILE_DEVICE_DEFCONFIG &> /dev/null
-        # Feature configs
-        make -s O=out ARCH=arm64 $COMPILE_FEATURE_DEFCONFIG &> /dev/null
+        # configs
+        make -s O=out ARCH=arm64 vendor/common.config $COMPILE_MAIN_DEFCONFIG vendor/msm8937-legacy.config vendor/xiaomi/msm8937/common.config $COMPILE_DEVICE_DEFCONFIG $COMPILE_FEATURE_DEFCONFIG &> /dev/null
     else
-        echo "Unknown main defconfig, cannot determine which config set to use."
-        exit 1
+        # configs
+        make -s O=out ARCH=arm64 vendor/common.config $COMPILE_MAIN_DEFCONFIG $COMPILE_DEVICE_DEFCONFIG $COMPILE_FEATURE_DEFCONFIG &> /dev/null
     fi
     make -j$(nproc --all) \
         O=out \
