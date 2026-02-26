@@ -76,10 +76,6 @@ setup_toolchain() {
 
 # Add patches function
 add_patches() {
-    # Enable LTO
-    echo "Enabling LTO..."
-    echo "CONFIG_LTO_CLANG=y" >> $MAIN_DEFCONFIG
-    echo "CONFIG_SHADOW_CALL_STACK=y" >> $MAIN_DEFCONFIG
     # Apply misc patches
     echo "Applying misc patches..."
     wget -qO- $MISC_PATCH1 | patch -s -p1
@@ -144,7 +140,7 @@ compile_kernel() {
     git commit -m "cleanup: applied patches before build" &> /dev/null
     # Start compilation
     echo "Starting kernel compilation..."
-    make -s O=out ARCH=arm64 $COMPILE_MAIN_DEFCONFIG vendor/msm8937-legacy.config $COMPILE_FEATURE1_DEFCONFIG $COMPILE_FEATURE2_DEFCONFIG vendor/xiaomi/msm8937/common.config $COMPILE_DEVICE_DEFCONFIG vendor/qualcomm/msm8937/qrd.config &> /dev/null
+    make -s O=out ARCH=arm64 $COMPILE_MAIN_DEFCONFIG vendor/xiaomi/msm8937/common.config $COMPILE_DEVICE_DEFCONFIG $COMPILE_FEATURE1_DEFCONFIG $COMPILE_FEATURE2_DEFCONFIG vendor/feature/lmkd.config vendor/qualcomm/msm8937/qrd.config  &> /dev/null
     make -j$(nproc --all) \
         O=out \
         ARCH=arm64 \
