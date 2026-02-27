@@ -87,3 +87,10 @@ jobs:
           name: perf-neon-${{ matrix.build-type }}-testing-${{ steps.ts.outputs.DATE }}-${{ steps.ts.outputs.TIME }}
           path: |
             AnyKernel3/*
+
+      - name: Pack & upload artifacts (defconfigs)
+        uses: actions/upload-artifact@v6
+        with:
+          name: defconfigs
+          path: |
+            android_kernel_xiaomi_msm8937/arch/arm64/configs/*
