@@ -23,7 +23,7 @@ setup_environment() {
     export CLANG_DIR=$PWD/clang
     export GCC64_DIR=$PWD/gcc64
     export GCC32_DIR=$PWD/gcc32
-    export PATH="$CLANG_DIR/clang-r547379/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH"
+    export PATH="$CLANG_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH"
     # Defconfig Settings
     export MAIN_DEFCONFIG="arch/arm64/configs/vendor/$MAIN_DEFCONFIG_IMPORT"
     export DEVICE_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
@@ -59,8 +59,8 @@ setup_toolchain() {
         # git clone $CLANG_REPO_URI --depth=1 clang &> /dev/null
         mkdir -p clang
         wget -qO- $CLANG_REPO_URI | tar xz -C $PWD/clang --strip-components=1
+        echo "clang dir check"
         ls -alZ $PWD/clang
-        ls -alZ $PWD/clang/bin
     else
         echo "Local clang dir found, using it."
     fi
