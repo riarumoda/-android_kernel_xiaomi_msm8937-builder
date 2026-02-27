@@ -122,10 +122,15 @@ compile_kernel() {
     # Merge all of the configs into one defconfig
     echo "Merging defconfigs..."
     mkdir -p out
-    ARCH=arm64 ./scripts/kconfig/merge_config.sh -O out/ -m "$MAIN_DEFCONFIG $DEVICE_DEFCONFIG $COMMON_DEFCONFIG $FEATURE_DEFCONFIG"
+    ARCH=arm64 ./scripts/kconfig/merge_config.sh -O out/ -m \
+        $MAIN_DEFCONFIG \
+        $DEVICE_DEFCONFIG \
+        $COMMON_DEFCONFIG \
+        $FEATURE_DEFCONFIG
     make O=out ARCH=arm64 savedefconfig
     cp out/defconfig arch/arm64/configs/$CENTER_STAGE_DEFCONFIG
     rm -rf out
+    mkdir -p out
     # Do a git cleanup before compiling
     echo "Cleaning up git before compiling..."
     git config user.email $GIT_EMAIL
