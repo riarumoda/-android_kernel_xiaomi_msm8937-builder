@@ -70,9 +70,6 @@ setup_toolchain() {
 add_patches() {
     # Enable config mismatch
     echo "CONFIG_DEBUG_SECTION_MISMATCH=y" >> $MAIN_DEFCONFIG
-    # Apply O3 flags into Kernel Makefile
-    sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
-    sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
 }
 
 # Add KernelSU function
@@ -108,7 +105,7 @@ compile_kernel() {
     git commit -m "cleanup: applied patches before build" &> /dev/null
     # Start compilation
     echo "Starting kernel compilation..."
-    make -s O=out ARCH=arm64 $COMPILE_MAIN_DEFCONFIG $COMPILE_DEVICE_DEFCONFIG vendor/common.config vendor/msm8937-legacy.config vendor/xiaomi/msm8937/common.config vendor/feature/android-12.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/qualcomm/msm8937/qrd.config &> /dev/null
+    make -s O=out ARCH=arm64 $COMPILE_MAIN_DEFCONFIG $COMPILE_DEVICE_DEFCONFIG vendor/common.config vendor/msm8937-legacy.config vendor/xiaomi/msm8937/common.config vendor/feature/android-12.config vendor/feature/lineageos.config vendor/feature/lmkd.config &> /dev/null
     make -j$(nproc --all) \
         O=out \
         ARCH=arm64 \
