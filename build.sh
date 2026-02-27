@@ -29,7 +29,7 @@ setup_environment() {
     export DEVICE_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
     export COMPILE_MAIN_DEFCONFIG="vendor/$MAIN_DEFCONFIG_IMPORT"
     export COMPILE_DEVICE_DEFCONFIG="vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
-    export COMPILE_FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config vendor/qualcomm/msm8937/qrd.config"
+    export COMPILE_FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/exfat.config vendor/feature/lmkd.config vendor/feature/wireguard.config"
     # Defconfig common Settings
     if [[ "$COMPILE_MAIN_DEFCONFIG" == *"mi8937"* ]]; then
         export COMPILE_COMMON_DEFCONFIG="vendor/common.config vendor/debugfs.config vendor/msm-clk.config vendor/msm8937-legacy.config vendor/xiaomi/msm8937/common.config"
@@ -89,8 +89,6 @@ add_patches() {
     echo "CONFIG_FSCACHE_STATS=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_FSCACHE_HISTOGRAM=y" >> $MAIN_DEFCONFIG
     echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
-    # Apply kernel rename to defconfig
-    sed -i 's/CONFIG_LOCALVERSION="-perf"/CONFIG_LOCALVERSION="-perf-neon"/' arch/arm64/configs/vendor/feature/lineageos.config
     # Make image smaller by disabling kallsyms
     echo "CONFIG_KALLSYMS=n" >> $MAIN_DEFCONFIG
     echo "CONFIG_KALLSYMS_ALL=n" >> $MAIN_DEFCONFIG
