@@ -29,6 +29,7 @@ setup_environment() {
     export DEVICE_DEFCONFIG="arch/arm64/configs/vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
     export COMPILE_MAIN_DEFCONFIG="vendor/$MAIN_DEFCONFIG_IMPORT"
     export COMPILE_DEVICE_DEFCONFIG="vendor/xiaomi/$DEVICE_DEFCONFIG_IMPORT"
+    export COMPILE_FEATURE_DEFCONFIG="vendor/feature/android-12.config vendor/feature/erofs.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/feature/wireguard.config"
     # KernelSU Settings
     if [[ "$KERNELSU_SELECTOR" == "--ksu=KSU_BLXX" ]]; then
         export KSU_SETUP_URI="https://github.com/backslashxx/KernelSU/raw/refs/heads/master/kernel/setup.sh"
@@ -68,8 +69,24 @@ setup_toolchain() {
 
 # Add patches function
 add_patches() {
+    # Apply general config patches
+    echo "Tuning the rest of default configs..."
+    sed -i 's/# CONFIG_PID_NS is not set/CONFIG_PID_NS=y/' $MAIN_DEFCONFIG
+    sed -i 's/CONFIG_HZ_100=y/CONFIG_HZ_250=y/' $MAIN_DEFCONFIG
+    echo "CONFIG_POSIX_MQUEUE=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_SYSVIPC=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_CGROUP_DEVICE=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_DEVTMPFS=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_IPC_NS=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_DEVTMPFS_MOUNT=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_FSCACHE=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_FSCACHE_STATS=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_FSCACHE_HISTOGRAM=y" >> $MAIN_DEFCONFIG
+    echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> $MAIN_DEFCONFIG
+    # Apply kernel rename to defconfig
+    sed -i 's/CONFIG_LOCALVERSION="-perf"/CONFIG_LOCALVERSION="-perf-neon"/' arch/arm64/configs/vendor/feature/lineageos.config
     # Enable config mismatch
-    echo "CONFIG_DEBUG_SECTION_MISMATCH=y" >> $MAIN_DEFCONFIG
+    # echo "CONFIG_DEBUG_SECTION_MISMATCH=y" >> $MAIN_DEFCONFIG
 }
 
 # Add KernelSU function
@@ -105,7 +122,7 @@ compile_kernel() {
     git commit -m "cleanup: applied patches before build" &> /dev/null
     # Start compilation
     echo "Starting kernel compilation..."
-    make O=out ARCH=arm64 $COMPILE_MAIN_DEFCONFIG $COMPILE_DEVICE_DEFCONFIG vendor/common.config vendor/msm8937-legacy.config vendor/xiaomi/msm8937/common.config vendor/feature/android-12.config vendor/feature/lineageos.config vendor/feature/lmkd.config vendor/qualcomm/msm8937/qrd.config
+    make -s O=out ARCH=arm64 $COMPILE_MAIN_DEFCONFIG $COMPILE_DEVICE_DEFCONFIG vendor/common.config vendor/msm8937-legacy.config vendor/xiaomi/msm8937/common.config $COMPILE_FEATURE_DEFCONFIG &> /dev/null
     make -j$(nproc --all) \
         O=out \
         ARCH=arm64 \
