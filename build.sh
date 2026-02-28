@@ -67,7 +67,10 @@ setup_toolchain() {
 
 # Add patches function
 add_patches() {
-    echo "Nothing added."
+    # Apply O3 flags into Kernel Makefile
+    echo "Applying O3 to the Makefile..."
+    sed -i 's/KBUILD_CFLAGS\s\++= -O2/KBUILD_CFLAGS   += -O3/g' Makefile
+    sed -i 's/LDFLAGS\s\++= -O2/LDFLAGS += -O3/g' Makefile
     # Enable config mismatch
     # echo "CONFIG_DEBUG_SECTION_MISMATCH=y" >> $MAIN_DEFCONFIG
 }
