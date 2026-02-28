@@ -59,8 +59,6 @@ setup_toolchain() {
         # git clone $CLANG_REPO_URI --depth=1 clang &> /dev/null
         mkdir -p clang
         wget -qO- $CLANG_REPO_URI | tar xz -C $PWD/clang
-        echo "clang dir check"
-        ls -alZ $PWD/clang
     else
         echo "Local clang dir found, using it."
     fi
