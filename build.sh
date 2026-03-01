@@ -30,11 +30,11 @@ setup_environment() {
     if [[ "$KERNELSU_SELECTOR" == "--ksu=KSU_BLXX" ]]; then
         export KSU_SETUP_URI="https://github.com/backslashxx/KernelSU/raw/refs/heads/master/kernel/setup.sh"
         export KSU_BRANCH="master"
-        export KSU_GENERAL_PATCH="https://github.com/zeta96/android_kernel_xiaomi_msm8937/commit/b36f9ca5af57b1c95cdb65eceaba93a9c69c9665.patch"
+        export KSU_GENERAL_PATCH="https://github.com/zeta96/android_kernel_xiaomi_msm8937/commit/49f07744f13de12606b1d4ebc5eeac60b19c97e4.patch"
     elif [[ "$KERNELSU_SELECTOR" == "--ksu=KSU_NEXT" ]]; then
         export KSU_SETUP_URI="https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh"
         export KSU_BRANCH="legacy"
-        export KSU_GENERAL_PATCH="https://github.com/zeta96/android_kernel_xiaomi_msm8937/commit/b36f9ca5af57b1c95cdb65eceaba93a9c69c9665.patch"
+        export KSU_GENERAL_PATCH="https://github.com/zeta96/android_kernel_xiaomi_msm8937/commit/49f07744f13de12606b1d4ebc5eeac60b19c97e4.patch"
     elif [[ "$KERNELSU_SELECTOR" == "--ksu=NONE" ]]; then
         export KSU_SETUP_URI=""
         export KSU_BRANCH=""
